@@ -1,0 +1,22 @@
+@import "normalize";
+
+body {
+  height: 100%;
+  background: var(--figma-color-bg) !important;
+}
+
+#root {
+  padding: 20px 20px;
+}
+
+#theme.radix-themes {
+  background: var(--figma-color-bg);
+  min-height: calc(100vh - 40px);
+}
+
+.fixedButton {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  left: 20px;
+}
