@@ -23,9 +23,9 @@ npm install
 After cloning the repository and installing all dependencies, the next step is to build the project. To do this, run the
 following command line in your terminal:
 
-    ```bash
-    npm run build
-    ```
+```bash
+npm run build
+```
 
 This will build the project and generate the resulting files in the `dist` directory.
 
