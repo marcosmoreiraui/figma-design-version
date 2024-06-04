@@ -1,8 +1,8 @@
-import createPage from '../functions/createPage'
-import hasPage from '../functions/hasPage'
 import getLastVersion, { getVersionType } from '../functions/getLastVersion'
 import commit from '../functions/commit'
 import getPage from '../functions/getPage'
+import selectPage from '../functions/selectPage'
+import createChangelogCard from '../functions/createChangelogCard'
 
 function bootstrap () {
   figma.showUI(__html__, {
@@ -15,15 +15,20 @@ function bootstrap () {
   figma.ui.onmessage = async (message) => {
     if (message.type === 'INITIALIZE') {
       try {
-        const bol = await hasPage()
+        const hasPage = await getPage()
         const versioning = await getVersionType()
-        const response = versioning === 'date' ? '' : await getLastVersion()
+        const lastVersion = versioning === 'date' ? '' : await getLastVersion()
+        const pagesIDS = figma.root.children.filter((node) => node.type === 'PAGE')
+        const pages = pagesIDS.map((page) => ({
+          id: page.id,
+          name: figma.getNodeById(page.id)?.name
+        }))
 
-        void Promise.all([bol, versioning, response]).then((values) => {
-          figma.ui.postMessage({
-            type: 'INITIALIZE',
-            content: values
-          })
+        const values = [hasPage, versioning, lastVersion, pages]
+
+        figma.ui.postMessage({
+          type: 'INITIALIZE',
+          content: values
         })
       } catch (error) {
         console.log(error)
@@ -34,16 +39,16 @@ function bootstrap () {
       }
     }
 
-    if (message.type === 'CREATE_PAGE') {
+    if (message.type === 'SELECT_PAGE') {
       try {
-        await createPage(message.content)
+        await selectPage(message.content)
         figma.ui.postMessage({
-          type: 'CREATE_PAGE',
+          type: 'SELECT_PAGE',
           content: 'success'
         })
       } catch (error) {
         figma.ui.postMessage({
-          type: 'CREATE_PAGE',
+          type: 'SELECT_PAGE',
           content: 'Error creating the changelog page.'
         })
       }
@@ -51,7 +56,7 @@ function bootstrap () {
 
     if (message.type === 'HAS_PAGE') {
       try {
-        const bol = await hasPage()
+        const bol = await getPage()
         figma.ui.postMessage({
           type: 'HAS_PAGE',
           content: String(bol)
@@ -108,8 +113,14 @@ function bootstrap () {
           version
         } = message.content
 
-        const pageID = await getPage()
-        const main = figma.getNodeById(pageID as any) as PageNode
+        const pageID = await getPage() ?? ''
+        const page = figma.getNodeById(pageID) as PageNode
+        const versionFrame = page.findOne(node => node.type === 'FRAME' && node.name === 'changelog-dv') as FrameNode
+
+        if (!versionFrame) {
+          const card = await createChangelogCard()
+          page.insertChild(0, card)
+        }
 
         const setVersion: {
           data?: SceneNode
@@ -123,11 +134,11 @@ function bootstrap () {
           return
         }
 
-        const emptyFrame = main.findOne((node) => node.name === 'empty-state')
+        const emptyFrame = page.findOne((node) => node.name === 'empty-state')
 
         emptyFrame?.remove()
-
-        main.insertChild(1, setVersion?.data)
+        const newVersionFrame = page.findOne((node) => node.name === 'changelog-dv') as FrameNode
+        newVersionFrame?.insertChild(1, setVersion?.data)
         figma.notify('✅ Version saved. Check your changelog page.')
         figma.closePlugin()
       } catch (error) {

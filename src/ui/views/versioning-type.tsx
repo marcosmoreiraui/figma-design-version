@@ -12,30 +12,32 @@ function Type ({ onClick }: { onClick: (v: string) => void }) {
   }
 
   return (
-    <Flex direction="column" align="start" justify="start" gap="4">
-      <Flex direction="column" gap="2">
-        <Text size="4" weight="bold" align="left">Versioning type</Text>
-        <Text size="1">Choose the versioning type for your project</Text>
-      </Flex>
-      <Flex>
-        <RadioCards.Root defaultValue="date" columns="2" gap="2" onValueChange={(v) => {
-          setType(v)
-        }}>
-          <RadioCards.Item value="date">
-            <Flex direction="column" width="100%">
-              <Text weight="bold" color="indigo">{date}</Text>
-              <Text size="1"><Text weight="bold">Date</Text>. For general projects</Text>
-            </Flex>
-          </RadioCards.Item>
-          <RadioCards.Item value="semantic">
-            <Flex direction="column" width="100%">
-              <Text weight="bold" color="indigo">v1.2.3</Text>
-              <Text size="1">
-                <Text weight="bold">Semantic</Text>. Mostly used for libraries
-              </Text>
-            </Flex>
-          </RadioCards.Item>
-        </RadioCards.Root>
+    <Flex direction="column" gap="4" height="calc(100% - 40px)">
+      <Flex direction="column" gap="2" height="100%">
+        <Flex direction="column" gap="2">
+          <Text size="4" weight="bold" align="left">Versioning type</Text>
+          <Text size="1">Choose the versioning type for your project</Text>
+        </Flex>
+        <Flex>
+          <RadioCards.Root defaultValue="date" columns="2" gap="2" onValueChange={(v) => {
+            setType(v)
+          }}>
+            <RadioCards.Item value="date">
+              <Flex direction="column" width="100%">
+                <Text weight="bold" color="indigo">{date}</Text>
+                <Text size="1"><Text weight="bold">Date</Text>. For general projects</Text>
+              </Flex>
+            </RadioCards.Item>
+            <RadioCards.Item value="semantic">
+              <Flex direction="column" width="100%">
+                <Text weight="bold" color="indigo">v1.2.3</Text>
+                <Text size="1">
+                  <Text weight="bold">Semantic</Text>. Mostly used for libraries
+                </Text>
+              </Flex>
+            </RadioCards.Item>
+          </RadioCards.Root>
+        </Flex>
       </Flex>
       <Button style={{ width: '100%' }} onClick={handleOnClick}>Continue <ArrowRightIcon/></Button>
     </Flex>

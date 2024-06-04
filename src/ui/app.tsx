@@ -4,18 +4,19 @@ import '@ui/styles/main.scss'
 import '@radix-ui/themes/styles.css'
 
 import CreateVersionSemantic from '@ui/views/create-version-semantic'
-import CreatePage from '@ui/views/create-page'
 import VersioningType from '@ui/views/versioning-type'
 import CreateVersionDate from '@ui/views/create-version-date'
-import { useFigmaMessage } from '../functions/useFigmaMessage'
+import { useFigmaMessage } from '@functions/useFigmaMessage'
 import { Flex, Spinner, Text } from '@radix-ui/themes'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import SelectPage from '@ui/views/select-page'
 
 function App () {
-  const [hasPage, setHasPage] = useState<boolean>(false)
+  const [page, setPage] = useState<string | undefined>('')
   const [versioning, setVersioning] = useState<any>('')
   const [lastVersion, setLastVersion] = useState<any>('0.0.0')
   const [loading, setLoading] = useState<boolean>(false)
+  const [pages, setPages] = useState<any>([])
 
   const {
     message,
@@ -33,9 +34,10 @@ function App () {
   useEffect(() => {
     if (message?.type === 'INITIALIZE') {
       console.log('INITIALIZE', message.content)
-      setHasPage(message.content[0])
+      setPage(message.content[0])
       setVersioning(message.content[1])
       setLastVersion(message.content[2].lastVersion || '0.0.0')
+      setPages(message.content[3])
       setInit(true)
     }
 
@@ -44,10 +46,10 @@ function App () {
       setError(message.content)
     }
 
-    if (message?.type === 'CREATE_PAGE') {
+    if (message?.type === 'SELECT_PAGE') {
       if (message.content !== 'error') {
-        console.log('CREATE_PAGE', message)
-        setHasPage(true)
+        console.log('SELECT_PAGE', message)
+        setPage(message.content)
       }
     }
     if (message?.type === 'VERSIONING') {
@@ -59,8 +61,8 @@ function App () {
     }
   }, [message])
 
-  const handleCreatePage = async (name: string) => {
-    postMessage('CREATE_PAGE', name)
+  const handleSelectPage = async (id: string) => {
+    postMessage('SELECT_PAGE', id)
   }
   const handleVersioning = async (type: string) => {
     setVersioning(type)
@@ -70,7 +72,6 @@ function App () {
     url?: string
   }>, version?: string) => {
     setLoading(true)
-
     if (versioning === 'semantic') {
       postMessage('COMMIT', {
         versioning,
@@ -95,7 +96,7 @@ function App () {
           <Flex direction="column" gap="0">
             <Text size="3" weight="bold">Loading...</Text>
             <Text size="1">If this takes too long, please move your changelog page to top level of your
-							Figma file</Text>
+                            Figma file</Text>
           </Flex>
         </Flex>
       </div>
@@ -109,7 +110,7 @@ function App () {
           <ExclamationTriangleIcon color="red" width="40" height="40"/>
           <Flex direction="column" gap="0">
             <Text size="3" weight="bold" color="red">
-							Error
+                            Error
             </Text>
             <Text size="1">
               {error}
@@ -122,11 +123,11 @@ function App () {
 
   return (
     <div className="main">
-      {!hasPage && <CreatePage onClick={handleCreatePage}/>}
-      {(hasPage && !versioning) && <VersioningType onClick={handleVersioning}/>}
-      {(hasPage && versioning === 'semantic') &&
-				<CreateVersionSemantic lastVersion={lastVersion} loading={loading} onClick={handleVersion}/>}
-      {(hasPage && versioning === 'date') && <CreateVersionDate loading={loading} onClick={handleVersion}/>}
+      {!page && <SelectPage pages={pages} onClick={handleSelectPage}/>}
+      {(page && !versioning) && <VersioningType onClick={handleVersioning}/>}
+      {(page && versioning === 'semantic') &&
+                <CreateVersionSemantic lastVersion={lastVersion} loading={loading} onClick={handleVersion}/>}
+      {(page && versioning === 'date') && <CreateVersionDate loading={loading} onClick={handleVersion}/>}
     </div>
   )
 }

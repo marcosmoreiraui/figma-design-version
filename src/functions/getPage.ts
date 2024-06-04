@@ -1,11 +1,12 @@
 async function getPage () {
-  const pageID: string = await figma.clientStorage.getAsync('changelog-frame')
+  const pageID: string = await figma.clientStorage.getAsync('dv-page')
   if (pageID) {
-    return pageID
+    const isPresent = figma.root.findOne(node => node.id === pageID && node.type === 'PAGE')
+    if (isPresent) {
+      return pageID
+    }
   }
-  const cvPage = figma.root.findOne((node) => node.name === 'changelog-dv')
-  await figma.clientStorage.setAsync('changelog-frame', cvPage?.id)
-  return cvPage?.id
+  return undefined
 }
 
 export default getPage
