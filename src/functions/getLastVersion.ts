@@ -1,50 +1,38 @@
-export const getVersionType = async () => {
-  const type = await figma.clientStorage.getAsync('versioning')
-  if (type) return type
+// This function will get the last version of the changelog
 
-  const changelogFrame = figma.root.findOne(node => node.type === 'FRAME' && node.name === 'changelog-dv') as FrameNode
-  if (!changelogFrame) return null
+import constants from '../constants'
 
-  const versionFrame = changelogFrame?.findOne((node: {
-    type: string
-    name: string
-  }) => node.type === 'FRAME' && node.name.startsWith('version')) as FrameNode
-  if (!versionFrame) return null
-
-  const headingNode: TextNode = versionFrame.findOne((node: {
-    type: string
-    name: string
-  }) => node.type === 'TEXT' && node.name === 'heading') as TextNode
-  if (!headingNode) return null
-
-  return headingNode.characters.startsWith('v') ? 'semantic' : 'date'
+export interface VersioningData {
+  type: string
+  lastVersion: string
 }
 
-const getLastVersion = async () => {
-  const type = await getVersionType()
-  let lastVersion = ''
-  if (type === 'semantic') {
-    const changelogFrame = figma.root.findOne(node => node.type === 'FRAME' && node.name === 'changelog-dv') as FrameNode
-    if (!changelogFrame) lastVersion = ''
+export const getLastVersion = async (pageID: string): Promise<VersioningData> => {
+  const lastVersion = ''
+  const page = figma.getNodeById(pageID) as PageNode
 
-    const versionFrame = changelogFrame?.findOne((node: {
-      type: string
-      name: string
-    }) => node.type === 'FRAME' && node.name.includes('version')) as FrameNode
-    if (!versionFrame) lastVersion = ''
+  const changelogFrame = page.findOne(node => node.type === 'FRAME' && node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
 
-    const headingNode: TextNode = versionFrame.findOne((node: {
-      type: string
-      name: string
-    }) => node.type === 'TEXT' && node.name === 'heading') as TextNode
-    if (!headingNode) lastVersion = ''
-
-    lastVersion = headingNode.characters.replace('v', '')
+  if (!changelogFrame) {
+    return {
+      type: '',
+      lastVersion
+    }
   }
+
+  const heading = changelogFrame.findOne(cNode => cNode.type === 'TEXT' && cNode.name === constants.HEADING_NAME) as TextNode
+
+  if (!heading) {
+    return {
+      type: '',
+      lastVersion
+    }
+  }
+
+  const type = heading ? heading.characters.startsWith('v') ? 'semantic' : 'date' : ''
   return {
     type,
-    lastVersion
+    lastVersion: type === 'semantic' ? heading.characters.replace('v', '') : ''
   }
 }
-
 export default getLastVersion
