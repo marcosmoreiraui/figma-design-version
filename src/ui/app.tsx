@@ -36,11 +36,11 @@ function App () {
     if (message?.type === 'INITIALIZE') {
       setPage(message.content.hasPage)
       setPages(message.content.pages)
+      setInit(true)
       if (message.content.hasPage) {
         setVersioning(message.content.versioning.type)
         setLastVersion(message.content.versioning.lastVersion || '0.0.0')
       }
-      setInit(true)
     }
 
     if (message?.type === 'ERROR') {
@@ -60,6 +60,7 @@ function App () {
         setPage(undefined)
       }
     }
+    
     if (message?.type === 'VERSIONING') {
       setVersioning(message.content.type)
       setLastVersion(message.content.lastVersion)

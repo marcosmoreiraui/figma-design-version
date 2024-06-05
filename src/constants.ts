@@ -1,6 +1,7 @@
 const constants = {
   ERROR: 'Error',
   VERSION: 'v',
+  PLUGIN_TAG: 'dv',
   DATE_FORMAT: 'MMMM D, YYYY',
   CHANGELOG_FRAME_NAME: 'changelog-dv',
   HEADING_NAME: 'heading',

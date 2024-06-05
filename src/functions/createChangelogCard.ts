@@ -171,8 +171,6 @@ const createChangelogCard = async () => {
   main.insertChild(1, emptyState)
   main.insertChild(2, footer)
 
-  await figma.clientStorage.setAsync('changelog', main.id)
-
   return main
 }
 

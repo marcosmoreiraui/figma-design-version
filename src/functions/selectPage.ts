@@ -1,9 +1,9 @@
 import createChangelogCard from '../functions/createChangelogCard'
+import setClientStorage from "../functions/setClientStorage";
 
 const selectPage = async (id: string) => {
   try {
-    await figma.clientStorage.setAsync('dv-fileId', figma.root.id)
-    await figma.clientStorage.setAsync('dv-page', id)
+    await setClientStorage('page', id)
 
     if (figma.root.findOne(node => node.id === id && node.type === 'PAGE')) {
       const frame = figma.root.findOne(node => node.type === 'FRAME' && node.name === 'changelog-dv')

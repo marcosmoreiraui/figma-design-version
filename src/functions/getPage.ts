@@ -1,5 +1,7 @@
+import getClientStorage from "../functions/getClientStorage";
+
 async function getPage () {
-  const pageID: string = await figma.clientStorage.getAsync('dv-page')
+  const pageID: string = await getClientStorage('page')
   if (pageID) {
     const isPresent = figma.getNodeById(pageID)
     if (isPresent) {
