@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { Button, Flex, Select, Text } from '@radix-ui/themes'
 
-function SelectPage ({ onClick, pages }: { onClick: (v: string) => void, pages: PageNode[] }) {
+function SelectPage ({
+  onClick,
+  pages,
+  loading
+}: { onClick: (v: string) => void, pages: PageNode[], loading: boolean }) {
   const [id, setId] = useState<string>(pages[0].id)
 
   const handleOnClick = async () => {
@@ -11,9 +15,9 @@ function SelectPage ({ onClick, pages }: { onClick: (v: string) => void, pages: 
   return (
     <Flex direction="column" gap="4" height="calc(100% - 40px)">
       <Flex direction="column" gap="1">
-        <Text size="4" weight="bold">Create your changelog page</Text>
+        <Text size="4" weight="bold">Set your changelog page</Text>
         <Text size="2">We add every change here. If you have a changelog, we can continue from your existing one
-                    without losing any history.</Text>
+          without losing any history.</Text>
       </Flex>
       <Flex direction="column" justify="between" gap="3" height="100%">
         <Flex direction="column" gap="2">
@@ -29,7 +33,7 @@ function SelectPage ({ onClick, pages }: { onClick: (v: string) => void, pages: 
             </Select.Content>
           </Select.Root>
         </Flex>
-        <Button color="violet" onClick={handleOnClick}>Save</Button>
+        <Button color="violet" loading={loading} onClick={handleOnClick}>Save</Button>
       </Flex>
     </Flex>
   )

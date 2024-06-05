@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import createVersionFrame from '../functions/createVersionFrame'
 import getLastVersion from '../functions/getLastVersion'
+import getPage from '../functions/getPage'
+import constants from '../constants';
 
 const saveVersion = async (version: string, message: string) => {
   try {
@@ -21,6 +23,7 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
   try {
     if (versioning === 'semantic') {
       const date = dayjs().format('MMMM D, YYYY h:mm A')
+      const pageID = await getPage() ?? ''
 
       const history = await saveVersion(version, message)
 
@@ -28,13 +31,13 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
         return { error: 'Error saving the version' }
       }
 
-      const getPreReleases = await getLastVersion()
+      const getPreReleases = await getLastVersion(pageID)
 
       let description = message
 
-      if (getPreReleases.lastVersion.includes('-rc') && !version.includes('-rc')) {
-        const getPreReleaseFrames = figma.root.findAll(node => node.type === 'FRAME' && node.name.includes(getPreReleases.lastVersion.split('-rc')[0])) as FrameNode[]
-        const getTextNodes = getPreReleaseFrames.map(frame => frame.findOne(node => node.type === 'TEXT' && node.name === 'description')) as TextNode[]
+      if (getPreReleases.lastVersion.includes('-rc') && !version.includes(constants.RC)) {
+        const getPreReleaseFrames = figma.root.findAll(node => node.type === 'FRAME' && node.name.includes(getPreReleases.lastVersion.split(constants.RC)[0])) as FrameNode[]
+        const getTextNodes = getPreReleaseFrames.map(frame => frame.findOne(node => node.type === 'TEXT' && node.name === constants.DESCRIPTION_NAME)) as TextNode[]
         description = message + '\n' + getTextNodes.map(textNode => textNode.characters).join('\n')
       }
 

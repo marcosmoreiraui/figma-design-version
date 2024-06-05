@@ -1,33 +1,33 @@
 const createEmptyState = async () => {
-  const frame_1_14 = figma.createFrame()
-  frame_1_14.resize(550.0, 263.0)
-  frame_1_14.locked = true
-  frame_1_14.primaryAxisSizingMode = 'AUTO'
-  frame_1_14.name = 'empty-state'
-  frame_1_14.relativeTransform = [
+  const frame = figma.createFrame()
+  frame.resize(550.0, 263.0)
+  frame.locked = true
+  frame.primaryAxisSizingMode = 'AUTO'
+  frame.name = 'empty-state'
+  frame.relativeTransform = [
     [1, 0, 0],
     [0, 1, 80]
   ]
-  frame_1_14.y = 80
-  frame_1_14.fills = []
-  frame_1_14.paddingLeft = 16
-  frame_1_14.paddingRight = 16
-  frame_1_14.paddingTop = 40
-  frame_1_14.paddingBottom = 40
-  frame_1_14.counterAxisAlignItems = 'CENTER'
-  frame_1_14.strokeTopWeight = 1
-  frame_1_14.strokeBottomWeight = 1
-  frame_1_14.strokeLeftWeight = 1
-  frame_1_14.strokeRightWeight = 1
-  frame_1_14.backgrounds = []
-  frame_1_14.layoutMode = 'VERTICAL'
-  frame_1_14.itemSpacing = 24
+  frame.y = 80
+  frame.fills = []
+  frame.paddingLeft = 16
+  frame.paddingRight = 16
+  frame.paddingTop = 40
+  frame.paddingBottom = 40
+  frame.counterAxisAlignItems = 'CENTER'
+  frame.strokeTopWeight = 1
+  frame.strokeBottomWeight = 1
+  frame.strokeLeftWeight = 1
+  frame.strokeRightWeight = 1
+  frame.backgrounds = []
+  frame.layoutMode = 'VERTICAL'
+  frame.itemSpacing = 24
 
   // Create RECTANGLE
-  const rectangle_1_18 = figma.createRectangle()
-  frame_1_14.appendChild(rectangle_1_18)
-  rectangle_1_18.name = 'image'
-  rectangle_1_18.fills = [
+  const rectangle = figma.createRectangle()
+  frame.appendChild(rectangle)
+  rectangle.name = 'image'
+  rectangle.fills = [
     {
       type: 'SOLID',
       visible: true,
@@ -40,65 +40,65 @@ const createEmptyState = async () => {
       }
     }
   ]
-  rectangle_1_18.relativeTransform = [
+  rectangle.relativeTransform = [
     [1, 0, 225],
     [0, 1, 40]
   ]
-  rectangle_1_18.x = 225
-  rectangle_1_18.y = 40
-  rectangle_1_18.cornerRadius = 12
-  rectangle_1_18.strokeTopWeight = 1
-  rectangle_1_18.strokeBottomWeight = 1
-  rectangle_1_18.strokeLeftWeight = 1
-  rectangle_1_18.strokeRightWeight = 1
+  rectangle.x = 225
+  rectangle.y = 40
+  rectangle.cornerRadius = 12
+  rectangle.strokeTopWeight = 1
+  rectangle.strokeBottomWeight = 1
+  rectangle.strokeLeftWeight = 1
+  rectangle.strokeRightWeight = 1
 
   // Create FRAME
-  const frame_1_19 = figma.createFrame()
-  frame_1_14.appendChild(frame_1_19)
-  frame_1_19.resize(518.0, 59.0)
-  frame_1_19.primaryAxisSizingMode = 'AUTO'
-  frame_1_19.name = 'texts'
-  frame_1_19.relativeTransform = [
+  const frame2 = figma.createFrame()
+  frame.appendChild(frame2)
+  frame2.resize(518.0, 59.0)
+  frame2.primaryAxisSizingMode = 'AUTO'
+  frame2.name = 'texts'
+  frame2.relativeTransform = [
     [1, 0, 16],
     [0, 1, 164]
   ]
-  frame_1_19.x = 16
-  frame_1_19.y = 164
-  frame_1_19.layoutAlign = 'STRETCH'
-  frame_1_19.fills = []
-  frame_1_19.counterAxisAlignItems = 'CENTER'
-  frame_1_19.strokeTopWeight = 1
-  frame_1_19.strokeBottomWeight = 1
-  frame_1_19.strokeLeftWeight = 1
-  frame_1_19.strokeRightWeight = 1
-  frame_1_19.backgrounds = []
-  frame_1_19.clipsContent = false
-  frame_1_19.layoutMode = 'VERTICAL'
-  frame_1_19.itemSpacing = 8
+  frame2.x = 16
+  frame2.y = 164
+  frame2.layoutAlign = 'STRETCH'
+  frame2.fills = []
+  frame2.counterAxisAlignItems = 'CENTER'
+  frame2.strokeTopWeight = 1
+  frame2.strokeBottomWeight = 1
+  frame2.strokeLeftWeight = 1
+  frame2.strokeRightWeight = 1
+  frame2.backgrounds = []
+  frame2.clipsContent = false
+  frame2.layoutMode = 'VERTICAL'
+  frame2.itemSpacing = 8
 
   // Create TEXT
-  const text_1_15 = figma.createText()
-  frame_1_19.appendChild(text_1_15)
-  text_1_15.resize(163.0, 19.0)
-  text_1_15.name = 'Create a new version'
+  const text = figma.createText()
+  frame2.appendChild(text)
+  text.resize(163.0, 19.0)
+  text.name = 'Create a new version'
   // Font properties
-  text_1_15.fontName = {
+  text.fontName = {
     family: 'Inter',
     style: 'Semi Bold'
   }
-  text_1_15.characters = 'Create a new version'
-  text_1_15.fontSize = 16
-  text_1_15.fontName = {
+  text.characters = 'Create a new version'
+  text.fontSize = 16
+  text.fontName = {
     family: 'Inter',
     style: 'Semi Bold'
   }
-  text_1_15.textAutoResize = 'HEIGHT'
+  text.textAutoResize = 'HEIGHT'
 
   // Create TEXT
-  const text_1_17 = figma.createText()
-  frame_1_19.appendChild(text_1_17)
-  text_1_17.name = 'description'
-  text_1_17.fills = [
+  const text2 = figma.createText()
+  frame2.appendChild(text2)
+  text2.name = 'description'
+  text2.fills = [
     {
       type: 'SOLID',
       visible: true,
@@ -111,33 +111,33 @@ const createEmptyState = async () => {
       }
     }
   ]
-  text_1_17.relativeTransform = [
+  text2.relativeTransform = [
     [1, 0, 0],
     [0, 1, 27]
   ]
-  text_1_17.y = 27
-  text_1_17.layoutAlign = 'STRETCH'
-  text_1_17.autoRename = false
+  text2.y = 27
+  text2.layoutAlign = 'STRETCH'
+  text2.autoRename = false
 
   // Font properties
-  text_1_17.fontName = {
+  text2.fontName = {
     family: 'Inter',
     style: 'Regular'
   }
-  text_1_17.textAlignHorizontal = 'CENTER'
-  text_1_17.characters =
+  text2.textAlignHorizontal = 'CENTER'
+  text2.characters =
         'Work on your design and when it is ready, generate a new version by opening the plugin again. All versions will be saved in the history so you can always access them.'
-  text_1_17.lineHeight = {
+  text2.lineHeight = {
     unit: 'PIXELS',
     value: 16
   }
-  text_1_17.fontName = {
+  text2.fontName = {
     family: 'Inter',
     style: 'Regular'
   }
-  text_1_17.textAutoResize = 'HEIGHT'
-  text_1_17.resize(360, 48.0)
+  text2.textAutoResize = 'HEIGHT'
+  text2.resize(360, 48.0)
 
-  return frame_1_14
+  return frame
 }
 export default createEmptyState

@@ -28,50 +28,58 @@ function App () {
 
   useEffect(() => {
     postMessage('INITIALIZE')
-    postMessage('GET_LAST_VERSION')
   }, [])
 
   useEffect(() => {
+    setLoading(false)
+
     if (message?.type === 'INITIALIZE') {
-      console.log('INITIALIZE', message.content)
-      setPage(message.content[0])
-      setVersioning(message.content[1])
-      setLastVersion(message.content[2].lastVersion || '0.0.0')
-      setPages(message.content[3])
+      setPage(message.content.hasPage)
+      setPages(message.content.pages)
+      if (message.content.hasPage) {
+        setVersioning(message.content.versioning.type)
+        setLastVersion(message.content.versioning.lastVersion || '0.0.0')
+      }
       setInit(true)
     }
 
     if (message?.type === 'ERROR') {
-      console.log('error', message)
+      setError(message.content)
+    }
+
+    if (message?.type === 'ERROR') {
       setError(message.content)
     }
 
     if (message?.type === 'SELECT_PAGE') {
+      setLoading(false)
       if (message.content !== 'error') {
-        console.log('SELECT_PAGE', message)
+        postMessage('VERSIONING')
         setPage(message.content)
+      } else {
+        setPage(undefined)
       }
     }
     if (message?.type === 'VERSIONING') {
-      setVersioning(message.content)
-    }
-
-    if (message?.type === 'COMMIT') {
-      setLoading(false)
+      setVersioning(message.content.type)
+      setLastVersion(message.content.lastVersion)
     }
   }, [message])
 
   const handleSelectPage = async (id: string) => {
+    setLoading(true)
     postMessage('SELECT_PAGE', id)
   }
   const handleVersioning = async (type: string) => {
     setVersioning(type)
   }
+
   const handleVersion = async (message?: string, links?: Array<{
     label?: string
     url?: string
   }>, version?: string) => {
     setLoading(true)
+
     if (versioning === 'semantic') {
       postMessage('COMMIT', {
         versioning,
@@ -96,7 +104,7 @@ function App () {
           <Flex direction="column" gap="0">
             <Text size="3" weight="bold">Loading...</Text>
             <Text size="1">If this takes too long, please move your changelog page to top level of your
-                            Figma file</Text>
+              Figma file</Text>
           </Flex>
         </Flex>
       </div>
@@ -110,7 +118,7 @@ function App () {
           <ExclamationTriangleIcon color="red" width="40" height="40"/>
           <Flex direction="column" gap="0">
             <Text size="3" weight="bold" color="red">
-                            Error
+              Error
             </Text>
             <Text size="1">
               {error}
@@ -123,10 +131,10 @@ function App () {
 
   return (
     <div className="main">
-      {!page && <SelectPage pages={pages} onClick={handleSelectPage}/>}
+      {!page && <SelectPage loading={loading} pages={pages} onClick={handleSelectPage}/>}
       {(page && !versioning) && <VersioningType onClick={handleVersioning}/>}
       {(page && versioning === 'semantic') &&
-                <CreateVersionSemantic lastVersion={lastVersion} loading={loading} onClick={handleVersion}/>}
+        <CreateVersionSemantic lastVersion={lastVersion} loading={loading} onClick={handleVersion}/>}
       {(page && versioning === 'date') && <CreateVersionDate loading={loading} onClick={handleVersion}/>}
     </div>
   )
