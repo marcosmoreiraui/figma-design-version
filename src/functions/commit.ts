@@ -2,13 +2,13 @@ import dayjs from 'dayjs'
 import createVersionFrame from '../functions/createVersionFrame'
 import getLastVersion from '../functions/getLastVersion'
 import getPage from '../functions/getPage'
-import constants from '../constants';
-import setClientStorage from "../functions/setClientStorage";
+import constants from '../constants'
+import setClientStorage from '../functions/setClientStorage'
 
 const saveVersion = async (version: string, message: string, type: 'semantic' | 'date') => {
   try {
-    const history = await figma.saveVersionHistoryAsync(type === 'semantic' ? 'v' : '' + version, message)
-    await setClientStorage('version', version);
+    const history = await figma.saveVersionHistoryAsync(type === 'semantic' ? 'v' + version : version, message)
+    await setClientStorage('version', version)
     return history.id
   } catch (error) {
     console.log(error)
@@ -26,10 +26,12 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       const date = dayjs().format('MMMM D, YYYY h:mm A')
       const pageID = await getPage() ?? ''
 
+      console.log('pageID', version)
+
       const history = await saveVersion(version, message, 'semantic')
 
       if (!history) {
-        return {error: 'Error saving the version'}
+        return { error: 'Error saving the version' }
       }
 
       const getPreReleases = await getLastVersion(pageID)
@@ -51,17 +53,17 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       )
 
       if (!frame) {
-        return {error: 'Error creating the version frame'}
+        return { error: 'Error creating the version frame' }
       }
 
-      return {data: frame}
+      return { data: frame }
     } else {
       const date = dayjs().format('MMMM D, YYYY')
 
       const history = await saveVersion(date, message, 'date')
 
       if (!history) {
-        return {error: 'Error saving the version'}
+        return { error: 'Error saving the version' }
       }
 
       const frame = await createVersionFrame(
@@ -73,13 +75,13 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       )
 
       if (!frame) {
-        return {error: 'Error creating the version frame'}
+        return { error: 'Error creating the version frame' }
       }
 
-      return {data: frame}
+      return { data: frame }
     }
   } catch (error) {
-    return {error}
+    return { error }
   }
 }
 export default commit
