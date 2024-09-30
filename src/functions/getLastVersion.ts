@@ -20,7 +20,6 @@ export const getLastVersion = async (pageID: string): Promise<VersioningData> =>
 
   const changelogFrame = page.findOne(node => node.type === 'FRAME' && node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
 
-
   console.log('changelogFrame', changelogFrame)
   if (!changelogFrame) {
     return {

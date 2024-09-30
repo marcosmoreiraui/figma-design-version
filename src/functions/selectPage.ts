@@ -1,5 +1,5 @@
 import createChangelogCard from '../functions/createChangelogCard'
-import setClientStorage from "../functions/setClientStorage";
+import setClientStorage from '../functions/setClientStorage'
 
 const selectPage = async (id: string) => {
   try {
