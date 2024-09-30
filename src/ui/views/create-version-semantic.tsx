@@ -234,13 +234,15 @@ function CreateVersionSemantic ({
           </Dialog.Content>
         </Dialog.Root>
       </Flex>
-      <Button onClick={handleClick} loading={loading}>Commit</Button>
-      <Button asChild variant="ghost" mt="4">
-        <a target="_blank" href="https://www.buymeacoffee.com/marcosmoreira" rel="noreferrer">
-          <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="16" alt="Buy me a coffee"/>
-          <Text>Buy me a coffee</Text>
-        </a>
-      </Button>
+      <Flex gap="4" direction="column">
+        <Button onClick={handleClick} loading={loading} size="3">Commit</Button>
+        <Button asChild variant="ghost" color="yellow">
+          <a target="_blank" href="https://www.buymeacoffee.com/marcosmoreira" rel="noreferrer">
+            <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="16" alt="Buy me a coffee"/>
+            <Text>Buy me a coffee</Text>
+          </a>
+        </Button>
+      </Flex>
     </Flex>
   )
 }

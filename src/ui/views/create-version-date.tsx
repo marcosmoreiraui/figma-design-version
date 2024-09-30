@@ -72,7 +72,7 @@ function CreateVersionDate ({
         </Flex>
         <Flex direction="column" gap="2" width="100%">
           <Text size="1" as="label" align="left" htmlFor="changes" weight="bold">Describe your changes</Text>
-          <TextArea mt="1" id="changes" rows={5} onChange={(v) => {
+          <TextArea mt="1" id="changes" rows={6} resize="vertical" onChange={(v) => {
             setMessage(v.target.value)
           }} placeholder="- Added Button component &#10;- Changed the primary color token"/>
         </Flex>
@@ -140,7 +140,15 @@ function CreateVersionDate ({
           </Dialog.Content>
         </Dialog.Root>
       </Flex>
-      <Button mt="4" onClick={handleClick} loading={loading} style={{ width: '100%' }}>Commit</Button>
+      <Flex gap="4" direction="column">
+        <Button onClick={handleClick} loading={loading} size="3">Commit</Button>
+        <Button asChild variant="ghost" color="yellow">
+          <a target="_blank" href="https://www.buymeacoffee.com/marcosmoreira" rel="noreferrer">
+            <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" width="16" alt="Buy me a coffee"/>
+            <Text>Buy me a coffee</Text>
+          </a>
+        </Button>
+      </Flex>
     </Flex>
   )
 }
