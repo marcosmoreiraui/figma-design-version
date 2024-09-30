@@ -32,7 +32,6 @@ function App () {
 
   useEffect(() => {
     setLoading(false)
-
     if (message?.type === 'INITIALIZE') {
       setPage(message.content.hasPage)
       setPages(message.content.pages)
@@ -41,10 +40,6 @@ function App () {
         setVersioning(message.content.versioning.type)
         setLastVersion(message.content.versioning.lastVersion || '0.0.0')
       }
-    }
-
-    if (message?.type === 'ERROR') {
-      setError(message.content)
     }
 
     if (message?.type === 'ERROR') {
@@ -60,29 +55,33 @@ function App () {
         setPage(undefined)
       }
     }
-    
+
     if (message?.type === 'VERSIONING') {
       setVersioning(message.content.type)
       setLastVersion(message.content.lastVersion)
     }
+
+    if (message?.type === 'LAST_VERSION') {
+      setLastVersion(message.content.lastVersion)
+    }
   }, [message])
 
-  const handleSelectPage = async (id: string) => {
-    setLoading(true)
-    postMessage('SELECT_PAGE', id)
-  }
   const handleVersioning = async (type: string) => {
     setVersioning(type)
   }
 
-  const handleVersion = async (message?: string, links?: Array<{
+  const handleChange = (e: any) => {
+    postMessage('LAST_VERSION', e)
+  }
+
+  const handleVersion = async (page?: string, message?: string, links?: Array<{
     label?: string
     url?: string
   }>, version?: string) => {
     setLoading(true)
-
     if (versioning === 'semantic') {
       postMessage('COMMIT', {
+        page,
         versioning,
         message,
         links,
@@ -90,6 +89,7 @@ function App () {
       })
     } else {
       postMessage('COMMIT', {
+        page,
         versioning,
         message,
         links
@@ -132,11 +132,12 @@ function App () {
 
   return (
     <div className="main">
-      {!page && <SelectPage loading={loading} pages={pages} onClick={handleSelectPage}/>}
-      {(page && !versioning) && <VersioningType onClick={handleVersioning}/>}
-      {(page && versioning === 'semantic') &&
-        <CreateVersionSemantic lastVersion={lastVersion} loading={loading} onClick={handleVersion}/>}
-      {(page && versioning === 'date') && <CreateVersionDate loading={loading} onClick={handleVersion}/>}
+      {(!versioning) && <VersioningType onClick={handleVersioning}/>}
+      {(versioning === 'semantic') &&
+        <CreateVersionSemantic pages={pages} selectedPage={page || pages[0].id} lastVersion={lastVersion} loading={loading}
+          onClick={handleVersion} onChange={handleChange}/>}
+      {(versioning === 'date') &&
+        <CreateVersionDate pages={pages} selectedPage={page || pages[0].id} loading={loading} onClick={handleVersion}/>}
     </div>
   )
 }

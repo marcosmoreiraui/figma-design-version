@@ -6,6 +6,7 @@ export default {
 	main: "plugin.js",
 	ui: "index.html",
 	capabilities: [],
+	"documentAccess": "dynamic-page",
 	permissions: [
 		"currentuser",
 		"activeusers",
@@ -14,6 +15,6 @@ export default {
 	enableProposedApi: false,
 	editorType: ["figma"],
 	networkAccess: {
-		allowedDomains: ["https://*.figma.com"]
+		allowedDomains: ["https://*.figma.com", "https://*.buymeacoffee.com"]
 	}
 };

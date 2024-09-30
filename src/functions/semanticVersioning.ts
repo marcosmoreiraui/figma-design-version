@@ -1,4 +1,4 @@
-function semanticVersioning (version: string, type: string, isRc: boolean): string {
+function semanticVersioning (version: string = '0.0.0', type: string, isRc: boolean): string {
   let versionArr: string[] = version.split('.')
   let result: string
 

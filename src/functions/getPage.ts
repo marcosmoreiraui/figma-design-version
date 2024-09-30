@@ -1,9 +1,9 @@
-import getClientStorage from "../functions/getClientStorage";
+import getClientStorage from '../functions/getClientStorage'
 
 async function getPage () {
-  const pageID: string = await getClientStorage('page')
+  const pageID: string = await getClientStorage('page') || ''
   if (pageID) {
-    const isPresent = figma.getNodeById(pageID)
+    const isPresent = await figma.getNodeByIdAsync(pageID)
     if (isPresent) {
       return pageID
     }

@@ -7,7 +7,7 @@ import setClientStorage from '../functions/setClientStorage'
 
 const saveVersion = async (version: string, message: string, type: 'semantic' | 'date') => {
   try {
-    const history = await figma.saveVersionHistoryAsync(type === 'semantic' ? 'v' + version : version, message)
+    const history = await figma.saveVersionHistoryAsync(version, message)
     await setClientStorage('version', version)
     return history.id
   } catch (error) {
@@ -25,10 +25,13 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
     if (versioning === 'semantic') {
       const date = dayjs().format('MMMM D, YYYY h:mm A')
       const pageID = await getPage() ?? ''
+      const pageName = await figma.getNodeByIdAsync(pageID).then(
+        (page) => page?.name
+      ) ?? '' as string
 
-      console.log('pageID', version)
+      const versionName = `${pageName} - v${version}`
 
-      const history = await saveVersion(version, message, 'semantic')
+      const history = await saveVersion(versionName, message, 'semantic')
 
       if (!history) {
         return { error: 'Error saving the version' }
@@ -39,6 +42,7 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       let description = message
 
       if (getPreReleases.lastVersion.includes('-rc') && !version.includes(constants.RC)) {
+        await figma.loadAllPagesAsync()
         const getPreReleaseFrames = figma.root.findAll(node => node.type === 'FRAME' && node.name.includes(getPreReleases.lastVersion.split(constants.RC)[0])) as FrameNode[]
         const getTextNodes = getPreReleaseFrames.map(frame => frame.findOne(node => node.type === 'TEXT' && node.name === constants.DESCRIPTION_NAME)) as TextNode[]
         description = message + '\n' + getTextNodes.map(textNode => textNode.characters).join('\n')
@@ -59,8 +63,14 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       return { data: frame }
     } else {
       const date = dayjs().format('MMMM D, YYYY')
+      const pageID = await getPage() ?? ''
+      const pageName = await figma.getNodeByIdAsync(pageID).then(
+        (page) => page?.name
+      ) ?? '' as string
 
-      const history = await saveVersion(date, message, 'date')
+      const versionName = `${pageName} - ${date}`
+
+      const history = await saveVersion(versionName, message, 'date')
 
       if (!history) {
         return { error: 'Error saving the version' }
@@ -81,6 +91,7 @@ const commit = async (versioning: 'semantic' | 'date', message: string, links: A
       return { data: frame }
     }
   } catch (error) {
+    console.log(error)
     return { error }
   }
 }

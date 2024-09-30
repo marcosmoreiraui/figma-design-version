@@ -4,12 +4,13 @@ import getPage from '../functions/getPage'
 import selectPage from '../functions/selectPage'
 import createChangelogCard from '../functions/createChangelogCard'
 import constants from '../constants'
+import setClientStorage from '../functions/setClientStorage'
 
 function bootstrap () {
   figma.showUI(__html__, {
     themeColors: true,
-    width: 350,
-    height: 400,
+    width: 480,
+    height: 560,
     title: 'Design version'
   })
   figma.ui.onmessage = async (message) => {
@@ -26,6 +27,9 @@ function bootstrap () {
           break
         case 'VERSIONING':
           await handleVersioning()
+          break
+        case 'LAST_VERSION':
+          await handleLastVersion(message)
           break
         case 'ERROR':
           handleErrorMessage(message)
@@ -47,13 +51,15 @@ bootstrap()
 
 async function handleInitialize () {
   try {
-    const pageID = await getPage() ?? ''
+    const pageID = await getPage()
+    const pagesIDS = figma.root.children.filter((node) => node.type === 'PAGE')
+
+    const pages = pagesIDS.map((page) => ({
+      id: page.id,
+      name: page.name
+    }))
+
     if (!pageID) {
-      const pagesIDS = figma.root.children.filter((node) => node.type === 'PAGE')
-      const pages = pagesIDS.map((page) => ({
-        id: page.id,
-        name: figma.getNodeById(page.id)?.name
-      }))
       figma.ui.postMessage({
         type: 'INITIALIZE',
         content:
@@ -64,12 +70,14 @@ async function handleInitialize () {
       })
       return
     }
+
     const versioning = await getLastVersion(pageID)
     figma.ui.postMessage({
       type: 'INITIALIZE',
       content: {
         hasPage: pageID,
-        versioning
+        versioning,
+        pages
       }
     })
   } catch (error) {
@@ -111,6 +119,24 @@ async function handleHasPage () {
   }
 }
 
+async function handleLastVersion (page: any) {
+  try {
+    const pageID = page.content
+
+    const versioning = await getLastVersion(pageID)
+
+    figma.ui.postMessage({
+      type: 'LAST_VERSION',
+      content: versioning
+    })
+  } catch (error) {
+    figma.ui.postMessage({
+      type: 'LAST_VERSION',
+      content: 'Error loading the last version.'
+    })
+  }
+}
+
 async function handleVersioning () {
   try {
     const pageID = await getPage() ?? ''
@@ -138,6 +164,7 @@ async function handleCommitMessage (message: {
     message: string
     links: Array<{ label: string, url: string }>
     version: string
+    page: string
   }
 }) {
   try {
@@ -145,16 +172,19 @@ async function handleCommitMessage (message: {
       versioning,
       message: description,
       links,
-      version
+      version,
+      page
     } = message.content
 
-    const pageID = await getPage() ?? ''
-    const page = figma.getNodeById(pageID) as PageNode
-    const versionFrame = page.findOne(node => node.type === 'FRAME' && node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
+    const pageID = await figma.getNodeByIdAsync(page) as PageNode
+    const versionFrame = pageID.findOne(node => node.type === 'FRAME' && node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
+
+    await setClientStorage('page', page)
 
     if (!versionFrame) {
+      console.log('nop')
       const card = await createChangelogCard()
-      page.insertChild(0, card)
+      pageID.insertChild(0, card)
     }
 
     const setVersion: {
@@ -168,15 +198,16 @@ async function handleCommitMessage (message: {
       return
     }
 
-    const emptyFrame = page.findOne((node) => node.name === 'empty-state')
+    const emptyFrame = pageID.findOne((node) => node.name === 'empty-state')
     emptyFrame?.remove()
 
-    const newVersionFrame = page.findOne((node) => node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
+    const newVersionFrame = pageID.findOne((node) => node.name === constants.CHANGELOG_FRAME_NAME) as FrameNode
     newVersionFrame?.insertChild(1, setVersion?.data)
 
     figma.notify('✅ Version saved. Check your changelog page.')
     figma.closePlugin()
   } catch (error) {
+    console.log(error)
     figma.notify('Error creating the version.')
     figma.closePlugin()
   }
