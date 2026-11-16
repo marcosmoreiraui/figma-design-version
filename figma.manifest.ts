@@ -15,6 +15,11 @@ export default {
 	enableProposedApi: false,
 	editorType: ["figma"],
 	networkAccess: {
-		allowedDomains: ["https://*.figma.com", "https://*.buymeacoffee.com"]
+		allowedDomains: [
+			"https://*.figma.com",
+			"https://*.buymeacoffee.com",
+			"https://*.figma-gov.com",
+			"https://figma-gov.com"
+		]
 	}
 };
