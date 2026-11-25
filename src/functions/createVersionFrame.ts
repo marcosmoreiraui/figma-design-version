@@ -481,8 +481,9 @@ const createVersionFrame = async (
     }
     const badge = await getUserBadge(user.name, user.photoUrl)
 
-    badge && versionTextGroup.insertChild(0, badge)
-    versionTextGroup.insertChild(1, versionDateText)
+    // badge is falsy when the user has no photo, so don't hardcode index 1
+    if (badge) versionTextGroup.appendChild(badge)
+    versionTextGroup.appendChild(versionDateText)
 
     versionTitle.insertChild(0, versionText)
     versionTitle.insertChild(1, versionTextGroup)
